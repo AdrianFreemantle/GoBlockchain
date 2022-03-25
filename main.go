@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+
+	"github.com/AdrianFreemantle/goblockchain/wallet"
 )
 
 func init() {
@@ -10,5 +12,7 @@ func init() {
 }
 
 func main() {
-	fmt.Println("starting")
+	w := wallet.NewWallet()
+	fmt.Println(w.PrivateKeyStr())
+	fmt.Println(w.PublicKeyStr())
 }
