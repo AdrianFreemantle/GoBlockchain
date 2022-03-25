@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/AdrianFreemantle/goblockchain/block"
 	"github.com/AdrianFreemantle/goblockchain/wallet"
 )
 
@@ -12,11 +13,24 @@ func init() {
 }
 
 func main() {
-	w := wallet.NewWallet()
-	fmt.Println(w.PrivateKeyStr())
-	fmt.Println(w.PublicKeyStr())
-	fmt.Println(w.BlockchainAddress())
+	walletM := wallet.NewWallet()
+	walletA := wallet.NewWallet()
+	walletB := wallet.NewWallet()
 
-	t := wallet.NewTransaction(w.PrivateKey(), w.PublicKey(), w.BlockchainAddress(), "B", 10)
-	fmt.Printf("singnature %s \n", t.GenerateSignature())
+	//Wallet
+	t := wallet.NewTransaction(walletA.PrivateKey(), walletA.PublicKey(), walletA.BlockchainAddress(), walletB.BlockchainAddress(), 10)
+
+	//Blockchain
+	blockchain := block.NewBlockChain(walletM.BlockchainAddress())
+	isAdded := blockchain.AddTransaction(walletA.BlockchainAddress(), walletB.BlockchainAddress(), 10, walletA.PublicKey(), t.GenerateSignature())
+
+	fmt.Println("Added: ", isAdded)
+
+	//Mining
+	blockchain.Mining()
+	blockchain.Print()
+
+	fmt.Printf("A %d\n", blockchain.CalcuateTotalAmount(walletA.BlockchainAddress()))
+	fmt.Printf("B %d\n", blockchain.CalcuateTotalAmount(walletB.BlockchainAddress()))
+	fmt.Printf("M %d\n", blockchain.CalcuateTotalAmount(walletM.BlockchainAddress()))
 }
