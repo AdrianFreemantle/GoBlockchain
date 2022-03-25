@@ -16,4 +16,7 @@ func main() {
 	fmt.Println(w.PrivateKeyStr())
 	fmt.Println(w.PublicKeyStr())
 	fmt.Println(w.BlockchainAddress())
+
+	t := wallet.NewTransaction(w.PrivateKey(), w.PublicKey(), w.BlockchainAddress(), "B", 10)
+	fmt.Printf("singnature %s \n", t.GenerateSignature())
 }
