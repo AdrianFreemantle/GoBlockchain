@@ -78,6 +78,10 @@ func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
 	return bc
 }
 
+func (bc *Blockchain) TransactionPool() []*Transaction {
+	return bc.transactionPool
+}
+
 func (bc *Blockchain) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Blocks []*Block `json:"chains"`
@@ -102,6 +106,16 @@ func (bc *Blockchain) Print() {
 		fmt.Printf("%s Chain %d %s\n", strings.Repeat("=", 25), i, strings.Repeat("=", 25))
 		block.Print()
 	}
+}
+
+func (bc *Blockchain) CreateTransaction(sender string, recipient string, value int64,
+	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
+	isTransacted := bc.AddTransaction(sender, recipient, value, senderPublicKey, s)
+
+	// TODO
+	// Sync
+
+	return isTransacted
 }
 
 func (bc *Blockchain) AddTransaction(sender string, recipient string, value int64, senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
@@ -214,11 +228,11 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 }
 
 type TransactionRequest struct {
-	SenderBlockchainAddress    *string  `json:"sender_blockchain_address"`
-	RecipientBlockchainAddress *string  `json:"recipient_blockchain_address"`
-	SenderPublicKey            *string  `json:"sender_public_key"`
-	Value                      *int64 `json:"value"`
-	Signature                  *string  `json:"signature"`
+	SenderBlockchainAddress    *string `json:"sender_blockchain_address"`
+	RecipientBlockchainAddress *string `json:"recipient_blockchain_address"`
+	SenderPublicKey            *string `json:"sender_public_key"`
+	Value                      *int64  `json:"value"`
+	Signature                  *string `json:"signature"`
 }
 
 func (tr *TransactionRequest) Validate() bool {
