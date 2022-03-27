@@ -33,13 +33,14 @@ func FindNeighbors(myHost string, myPort uint16, startIp uint8, endIp uint8, sta
 	neighbors := make([]string, 0)
 
 	for port := startPort; port <= endPort; port += 1 {
-		for ip := startIp; ip <= endIp; ip += 1 {
+		ip := startIp
+		//for ip := startIp; ip <= endIp; ip += 1 {
 			guessHost := fmt.Sprintf("%s%d", prefixHost, lastIp+int(ip))
 			guessTarget := fmt.Sprintf("%s:%d", guessHost, port)
 			if guessTarget != address && IsFoundHost(guessHost, port) {
 				neighbors = append(neighbors, guessTarget)
 			}
-		}
+		//}
 	}
 	return neighbors
 }
